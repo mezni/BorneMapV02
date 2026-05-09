@@ -1,0 +1,13 @@
+station_name,stations,power,connector,points,latitude,longitude,map_url
+Bizerte RN11,1,AC 22 KWH,Type 2,2,,,https://goo.gl/maps/USq5nP6mqxJNRcbo9
+Jardins du lac,1,AC 22 KWH,Type 2,2,,,https://goo.gl/maps/8cHTceg7R5UVwma99
+Grombalia A1,2,DC 50 KWHAC 11 KWH,Type 2,2,,,https://goo.gl/maps/ekQ9PpPPBgYxdUMu6
+Borjine A1,1,DC 50 KWH,Type 2,1,,,https://goo.gl/maps/v1SJtoaWqUYXtr728
+El Jem A1,1,DC 50 KWH,Type 2,1,,,https://goo.gl/maps/YWTkY8Um5wry69tu7
+Sousse I,1,AC 22 KWH,Type 2,2,,,https://goo.gl/maps/hzDezAyydJ1gaVQA6
+Hamet Jerid Tozeur,1,AC 22 KWH,Type 2,2,,,https://goo.gl/maps/3Uu5mUMqf3YNHY6a6
+Tataouine 1,1,AC 22 KWH,Type 2,1,,,https://goo.gl/maps/MU1HipanCgbhwk9v8
+Le Kef,1,AC 22 KWH,Type 2,1,,,https://goo.gl/maps/dKKQRCBFkqrCMmFu5
+Sidi Bouzid,1,AC 22 KWH,Type 2,2,,,https://goo.gl/maps/P3mbrqaFVVTpqGQc9
+Hammamet 1,1,AC 22 KWH,Type 2,2,,,https://maps.app.goo.gl/Khp8ozCKrnprtWQD8
+Djerba Houmet Essouk,1,AC 22 KWH,Type 2,1,,,https://www.google.com/maps?cid=5822607751175539918
