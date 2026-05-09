@@ -1,0 +1,256 @@
+name: everest
+
+services:
+  # ========================
+  # PostgreSQL (Keycloak DB)
+  # ========================
+  kc-db:
+    image: postgres:18.1-alpine
+    container_name: kc-db
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5600:5432"   # host:container
+    volumes:
+      - kc-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ev-network
+
+  # ========================
+  # Keycloak
+  # ========================
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.4.7
+    container_name: keycloak
+    command: start-dev
+    environment:
+      # ---- DB ----
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://kc-db:5432/keycloak   # always container port
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+
+      # ---- Bootstrap Admin (new vars) ----
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: password
+
+      # ---- Runtime ----
+      KC_HOSTNAME_STRICT: "false"
+      KC_HTTP_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+    ports:
+      - "5080:8080"
+    depends_on:
+      kc-db:
+        condition: service_healthy
+#    healthcheck:
+#      test: ["CMD-SHELL", "curl --fail -s http://localhost:8080/health/ready || exit 1"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 60
+#      start_period: 120s
+    networks:
+      - ev-network
+
+  # ========================
+  # Keycloak Init (kcadm.sh)
+  # ========================
+  keycloak-init:
+    image: quay.io/keycloak/keycloak:26.4.7
+    container_name: keycloak-init
+#    depends_on:
+#      keycloak:
+#        condition: service_healthy
+    entrypoint: ["/bin/bash", "/init/init.sh"]
+    volumes:
+      - ./kcadm:/init
+    networks:
+      - ev-network
+    restart: "no"
+
+
+  # ========================
+  # EVCS DB
+  # ========================
+  evcs-db:
+    image: postgis/postgis:18-3.6
+    container_name: evcs-db
+    environment:
+      POSTGRES_DB: evcs_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5700:5432"
+    volumes:
+      - evcs-data:/var/lib/postgresql
+#      - ./databases/evcs-db/:/docker-entrypoint-initdb.d/:ro
+    networks:
+      - ev-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "evcs_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========================
+  # OSM Importer
+  # ========================
+  osm-importer:
+    build:
+      context: ./tools/osm-importer
+      dockerfile: Dockerfile
+    container_name: osm-importer
+    depends_on:
+      evcs-db:
+        condition: service_healthy
+    environment:
+      PGHOST: evcs-db
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: password
+      PGDATABASE: evcs_db
+      REGION: tunisia
+      DATADIR: /osm/data
+    volumes:
+      - ./tools/data:/osm/data
+    networks:
+      - ev-network
+
+  # ========================
+  # Auth DB
+  # ========================
+  auth-db:
+    image: postgres:18.1-alpine
+    container_name: auth-db
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5800:5432"
+    volumes:
+      - auth-data:/var/lib/postgresql/data
+    networks:
+      - ev-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "auth_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# ========================
+# Auth service
+# ========================
+  auth-service:
+    build:
+      context: ../services/auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    environment:
+      DATABASE_URL: postgresql://postgres:password@auth-db:5432/auth_db
+#      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 3100
+#      RUST_LOG: info
+      KEYCLOAK_URL: http://keycloak:8080
+      KEYCLOAK_REALM: myrealm
+      KEYCLOAK_AUTH_CLIENT_ID: auth-client
+      KEYCLOAK_BACKEND_CLIENT_ID: backend-admin
+      KEYCLOAK_BACKEND_CLIENT_SECRET: backend-admin-secret
+    ports:
+      - "3100:3100"
+    depends_on:
+      auth-db:
+        condition: service_healthy
+    networks:
+      - ev-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3100/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# ========================
+# Admin service
+# ========================
+  admin-service:
+    build:
+      context: ../services/admin-service
+      dockerfile: Dockerfile
+    container_name: admin-service
+    environment:
+      DATABASE_URL: postgresql://postgres:password@evcs-db:5432/evcs_db
+      JWT_ISSUER: http://keycloak:8080/realms/myrealm
+      JWKS_URL: http://keycloak:8080/realms/myrealm/protocol/openid-connect/certs
+#      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 3200
+#      RUST_LOG: info
+    ports:
+      - "3200:3200"
+    depends_on:
+      auth-db:
+        condition: service_healthy
+    networks:
+      - ev-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3200/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# ========================
+# Locate service
+# ========================
+  locate-service:
+    build:
+      context: ../services/locate-service
+      dockerfile: Dockerfile
+    container_name: locate-service
+    environment:
+      DATABASE_URL: postgresql://postgres:password@evcs-db:5432/evcs_db
+      JWT_ISSUER: http://keycloak:8080/realms/myrealm
+      JWKS_URL: http://keycloak:8080/realms/myrealm/protocol/openid-connect/certs
+#      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 3300
+#      RUST_LOG: info
+    ports:
+      - "3300:3300"
+    depends_on:
+      auth-db:
+        condition: service_healthy
+    networks:
+      - ev-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3300/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+
+# ========================
+# Volumes
+# ========================
+volumes:
+  kc-data:
+  evcs-data:
+  auth-data:
+
+# ========================
+# Networks
+# ========================
+networks:
+  ev-network:
+    driver: bridge
