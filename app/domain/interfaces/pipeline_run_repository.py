@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, List
 from uuid import UUID
 from app.domain.models.pipeline_runs import PipelineRun
 
@@ -19,4 +19,8 @@ class AbstractPipelineRunRepository(ABC):
 
     @abstractmethod
     def delete(self, run_id: UUID) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def list(self, skip: int = 0, limit: int = 100) -> List[PipelineRun]:
         raise NotImplementedError

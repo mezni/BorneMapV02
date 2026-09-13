@@ -1,7 +1,7 @@
 # PostgreSQL, pgvector and full-text search configuration.
 
 connection:
-  url: postgresql+asyncpg://aether:aether@localhost:5432/aether_rag
+  url: postgresql+psycopg2://aether:aether@localhost:5432/aether_rag
   pool_size: 10
   max_overflow: 5
   pool_timeout_seconds: 30.0

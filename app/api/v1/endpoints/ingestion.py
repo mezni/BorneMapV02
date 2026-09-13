@@ -76,7 +76,13 @@ async def list_pipeline_runs(
     repo: SQLAlchemyPipelineRunRepository = Depends(get_pipeline_run_repo),
 ):
     """Get pipeline runs history."""
-    return PipelineRunListResponse(runs=[], total=0, skip=skip, limit=limit)
+    runs = repo.list(skip=skip, limit=limit)
+    return PipelineRunListResponse(
+        runs=[map_domain_to_schema(r) for r in runs],
+        total=len(runs),  # Note: this is just the returned count, not total in DB
+        skip=skip,
+        limit=limit,
+    )
 
 
 @router.get("/runs/{run_id}", response_model=PipelineRunResponse)

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import Optional, List
 from uuid import UUID
 
 from app.db.models.pipeline_runs import PipelineRunORM
@@ -55,6 +55,10 @@ class SQLAlchemyPipelineRunRepository(AbstractPipelineRunRepository):
         if pipeline_run_orm:
             return self._to_domain_model(pipeline_run_orm)
         return None
+
+    def list(self, skip: int = 0, limit: int = 100) -> List[PipelineRun]:
+        pipeline_runs_orm = self.session.query(PipelineRunORM).order_by(PipelineRunORM.started_at.desc()).offset(skip).limit(limit).all()
+        return [self._to_domain_model(orm) for orm in pipeline_runs_orm]
 
     def update(self, pipeline_run: PipelineRun) -> None:
         pipeline_run_orm = self.session.query(PipelineRunORM).filter_by(id=pipeline_run.id).first()
