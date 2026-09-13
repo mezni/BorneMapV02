@@ -49,6 +49,9 @@
 - **Alembic migration framework:** initialized `alembic/` directory with version control for database schema migrations
 - **Ingestion pipeline:** empty pipeline orchestrator added to `app/ingestion/pipeline.py` with 0 stages for future extension
 - **Pipeline run tracking:** `PipelineRun` domain entity and `pipeline_runs` database table for tracking ingestion execution metrics, FinOps token accounting, and execution audit trails
+- **FastAPI REST API:** `app/api/main.py` initialization with lifespan management, CORS middleware
+- **Health endpoints:** `GET /api/v1/health/health`, `/live`, `/ready` for liveness/readiness probes
+- **Ingestion API endpoints:** `POST /api/v1/ingestion/run` to trigger pipeline runs, `GET /api/v1/ingestion/runs` for history, `GET /api/v1/ingestion/runs/{run_id}` for run details
 
 ## v0.1.3-dev (Unreleased)
 
