@@ -2,7 +2,7 @@
 
 ## Project: Aether Wireless RAG Platform
 
-**Current Version:** v0.1.2-dev
+**Current Version:** v0.1.4
 
 ## Roadmap Overview
 
@@ -42,6 +42,12 @@
   - **Ruff** (`0.16.7`): line length 120, `py312` target, lint ruleset (E, W, F, I, UP, B, RUF) and formatted output style.
   - **MyPy** (`2.3.1`): strict mode against `app`, `ui`, `tests` with pydantic plugin.
   - **Pytest** (`9.1.1`): `tests/` test discovery with `-ra -q` defaults.
+## v0.1.4
+
+### Added
+
+- **Alembic migration framework:** initialized `alembic/` directory with version control for database schema migrations
+
 ## v0.1.3-dev (Unreleased)
 
 ### Added
