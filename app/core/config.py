@@ -380,9 +380,11 @@ def load_runtime_config(settings: Settings | None = None) -> RuntimeConfig:
     or ConfigValidationError when content fails schema validation.
     """
     settings = settings or get_settings()
-    return RuntimeConfig(
-        llm=_load_file(LLMConfig, settings.config_path("llm.yaml")),
-        prompts=_load_file(PromptsConfig, settings.config_path("prompts.yaml")),
-        pipelines=_load_file(PipelinesConfig, settings.config_path("pipelines.yaml")),
-        database=_load_file(DatabaseConfig, settings.config_path("database.yaml")),
-    )
+    llm = _load_file(LLMConfig, settings.config_path("llm.yaml"))
+    prompts = _load_file(PromptsConfig, settings.config_path("prompts.yaml"))
+    pipelines = _load_file(PipelinesConfig, settings.config_path("pipelines.yaml"))
+    database = _load_file(DatabaseConfig, settings.config_path("database.yaml"))
+    try:
+        return RuntimeConfig(llm=llm, prompts=prompts, pipelines=pipelines, database=database)
+    except ValidationError as exc:
+        raise ConfigValidationError("runtime-config", exc) from exc
