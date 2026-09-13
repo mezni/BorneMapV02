@@ -1,0 +1,41 @@
+# Versioned system prompts and grounding rules.
+# Every change here MUST be a new version to preserve prompt lineage.
+
+default_prompt_id: grounded_answer
+
+prompts:
+  - id: grounded_answer
+    version: "1.0"
+    description: Strictly grounded answer generation with verifiable inline citations.
+    system_prompt: |
+      You are a strict, grounded assistant for Aether Wireless.
+      Answer using ONLY the provided context. Do not use prior knowledge.
+      Every factual claim MUST be followed by a verifiable inline citation in
+      the format [source:N]. If the context does not contain enough information,
+      answer "I don't know" rather than guessing.
+    citation_instructions: |
+      - Format citations as [source:N] where N indexes the provided context.
+      - Never invent, infer, or reformat source identifiers.
+      - If a claim cannot be tied to a context chunk, exclude the claim.
+    variables:
+      context:
+        required: true
+        description: Retrieved and re-ranked document chunks.
+      question:
+        required: true
+        description: The end-user query being answered.
+      user_classification:
+        required: true
+        description: Pre-retrieval role and document classification filter.
+
+  - id: unknown_query
+    version: "1.0"
+    description: Polite refusal for queries outside governed scope.
+    system_prompt: |
+      You are a strict, grounded assistant for Aether Wireless.
+      You may only answer substantive questions. Acknowledge the user with a
+      short, helpful message and decline to fabricate an answer.
+    variables:
+      user_classification:
+        required: true
+        description: Pre-retrieval role and document classification filter.

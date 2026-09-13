@@ -1,0 +1,43 @@
+# Ingestion, chunking, retrieval and re-ranking configuration.
+# Tune weights/thresholds here without touching application code.
+
+ingestion:
+  max_file_size_mb: 25
+  allowed_extensions:
+    - pdf
+    - docx
+    - html
+    - md
+    - csv
+    - txt
+  storage_driver: local
+  batch_size: 10
+
+chunking:
+  strategy: parent_child   # recursive | semantic | parent_child
+  recursive:
+    chunk_size: 512
+    chunk_overlap: 64
+  parent_child:
+    parent_chunk_size: 1536
+    child_chunk_size: 512
+    child_chunk_overlap: 64
+  semantic:
+    similarity_threshold: 0.35
+
+retrieval:
+  dense:
+    top_k: 20
+    ef_search: 40
+  sparse:
+    top_k: 20
+  hybrid:
+    rrf_k: 60
+    dense_weight: 1.0
+    sparse_weight: 1.0
+    candidate_k: 100
+  rerank:
+    enabled: true
+    model: cross_encoder/ms-marco-MiniLM-L-6-v2
+    top_k: 5
+    score_threshold: 0.50

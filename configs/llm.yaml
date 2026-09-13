@@ -1,0 +1,31 @@
+# LLM & embedding provider configuration.
+# Runtime overridable without code changes: edit, deploy, reload.
+
+chat:
+  primary:
+    provider: openai
+    model: gpt-4o-mini
+    temperature: 0.0
+  fallback:
+    provider: anthropic
+    model: claude-3-5-sonnet-latest
+    temperature: 0.0
+  max_tokens: 2048
+
+embeddings:
+  provider: openai
+  model: text-embedding-3-small
+  dimensions: 1536
+  batch_size: 64
+
+timeouts:
+  request_timeout_seconds: 30.0
+  connect_timeout_seconds: 5.0
+  retries: 3
+  backoff_factor: 2.0
+
+pricing:
+  currency: USD
+  chat_input_usd_per_1k_tokens: 0.150
+  chat_output_usd_per_1k_tokens: 0.600
+  embedding_usd_per_1m_tokens: 0.020
