@@ -2,14 +2,15 @@
 
 ## Project: Aether Wireless RAG Platform
 
-**Current Version:** v0.1.1-dev
+**Current Version:** v0.1.2-dev
 
 ## Roadmap Overview
 
 | Version | Feature Domain | Key Objective | Status |
 | ------- | -------------- | ------------- | ------ |
 | v0.1.0  | Foundation      | Environment, project scaffold, Docker, PostgreSQL/pgvector, configs/ YAML system | Done |
-| v0.1.1  | Config System   | Repository architecture, externalized YAML configs, Pydantic validation engine | In Progress |
+| v0.1.1  | Config System   | Repository architecture, externalized YAML configs, Pydantic validation engine | Done |
+| v0.1.2  | Test Suite      | Unit tests for config system, conftest fixtures, pytest coverage | In Progress |
 
 ## v0.1.1-dev (Unreleased)
 

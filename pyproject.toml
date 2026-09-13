@@ -1,6 +1,6 @@
 [project]
 name = "aether-rag"
-version = "0.1.1"
+version = "0.1.2"
 description = "Production-grade, highly observable RAG platform for Aether Wireless"
 requires-python = ">=3.12"
 readme = "README.md"
