@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: bitnami/postgres:15
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=aether
+      - POSTGRES_PASSWORD=aether
+      - POSTGRES_DB=aether_rag
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/bitnami/postgres
+    ports:
+      - '5432:5432'
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    command: server /data --console-address ':9001'
+    environment:
+      - MINIO_ROOT_USER=aether
+      - MINIO_ROOT_PASSWORD=aether
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    volumes:
+      - minio_data:/data
+
+  pgadmin:
+    image: dpage/pgadmin4:6
+    container_name: pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=aether@aether.com
+      - PGADMIN_DEFAULT_PASSWORD=aether
+    ports:
+      - '8080:80'
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.55
+    container_name: jaeger
+    ports:
+      - '16686:16686'
+      - '14250:14250'
+
+  prometheus:
+    image: prom/prometheus:v2.50
+    container_name: prometheus
+    # Mount a prometheus.yml config volume
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - '9090:9090'
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.97.0
+    container_name: otel-collector
+    command: ["--config=/etc/otel/collector-config.yaml"]
+    volumes:
+      - ./otel/collector-config.yaml:/etc/otel/collector-config.yaml
+    ports:
+      - '4317:4317'
+      - '4318:4318'
+
+  # Optional: A simple app runner for development
+  app:
+    build: .
+    container_name: aether-rag-app
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://aether:aether@postgres:5432/aether_rag
+      - MINIO_ENDPOINT=http://minio:9000
+      - MINIO_ACCESS_KEY=aether
+      - MINIO_SECRET_KEY=aether
+    depends_on:
+      - postgres
+      - minio
+    ports:
+      - '8000:8000'
+
+volumes:
+  postgres_data:
+  minio_data:
