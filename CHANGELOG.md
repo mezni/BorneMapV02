@@ -47,6 +47,7 @@
 ### Added
 
 - **Alembic migration framework:** initialized `alembic/` directory with version control for database schema migrations
+- **Ingestion pipeline:** empty pipeline orchestrator added to `app/ingestion/pipeline.py` with 0 stages for future extension
 
 ## v0.1.3-dev (Unreleased)
 

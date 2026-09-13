@@ -12,9 +12,6 @@ ingestion:
     - txt
   storage_driver: local
 
-my_new_pipeline:
-  stages: []
-
 
 chunking:
   strategy: parent_child   # recursive | semantic | parent_child

@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: bitnami/postgres:15
+    image: postgres:15
     container_name: postgres
     environment:
       - POSTGRES_USER=aether
@@ -11,9 +11,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - postgres_data:/bitnami/postgres
-    ports:
-      - '5432:5432'
+      - postgres_data:/var/lib/postgresql/data
 
   minio:
     image: minio/minio:latest
