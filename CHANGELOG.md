@@ -8,12 +8,30 @@
 
 | Version | Feature Domain | Key Objective | Status |
 | ------- | -------------- | ------------- | ------ |
-| v0.1.0  | Foundation      | Environment, project scaffold, Docker, PostgreSQL/pgvector, configs/ YAML system | Done |
-| v0.1.1  | Config System   | Repository architecture, externalized YAML configs, Pydantic validation engine | Done |
-| v0.1.2  | Test Suite      | Unit tests for config system, conftest fixtures, pytest coverage | Done |
-| v0.1.3  | Infrastructure  | Docker Compose with PostgreSQL (pgvector), MinIO, OpenTelemetry, Jaeger, Prometheus | In Progress |
+| v0.1.4  | API & Dashboard | FastAPI REST API, Health endpoints, Ingestion API, Streamlit Dashboard | Done |
+| v0.1.3  | Pipeline & DB   | Alembic migrations, PipelineRun entity, pipeline_runs table, Ingestion orchestrator | Done |
+| v0.1.2  | Config System   | Repository architecture, externalized YAML configs, Pydantic validation engine | Done |
+| v0.1.1  | Foundation      | Project scaffold, uv environment, Docker, PostgreSQL/pgvector, configs/ YAML system | Done |
+| v0.1.0  | Foundation      | Environment setup, project scaffold, tooling (Ruff, MyPy, Pytest) | Done |
 
-## v0.1.1-dev (Unreleased)
+## v0.1.4 (2026-09-13)
+
+### Added
+
+- **FastAPI REST API:** `app/api/main.py` initialization with lifespan management, CORS middleware
+- **Health endpoints:** `GET /api/v1/health/health`, `/live`, `/ready` for liveness/readiness probes
+- **Ingestion API endpoints:** `POST /api/v1/ingestion/run` to trigger pipeline runs, `GET /api/v1/ingestion/runs` for history, `GET /api/v1/ingestion/runs/{run_id}` for run details
+- **Streamlit Dashboard:** `ui/app.py` entry point with navigation sidebar, `ui/pages/ingestion.py` dashboard with pipeline trigger button, current run monitoring, and last 5 runs history
+
+## v0.1.3 (2026-09-13)
+
+### Added
+
+- **Alembic migration framework:** initialized `alembic/` directory with version control for database schema migrations
+- **Ingestion pipeline:** empty pipeline orchestrator added to `app/ingestion/pipeline.py` with 0 stages for future extension
+- **Pipeline run tracking:** `PipelineRun` domain entity and `pipeline_runs` database table for tracking ingestion execution metrics, FinOps token accounting, and execution audit trails
+
+## v0.1.2 (2026-09-13)
 
 ### Added
 
@@ -29,7 +47,7 @@
   - `load_runtime_config()` aggregating into a validated `RuntimeConfig`, wrapping failures as `ConfigLoadError` / `ConfigValidationError`.
   - `types-pyYAML` stubs added to the dev dependency group for MyPy typing.
 
-## v0.1.0-dev (2026-09-13)
+## v0.1.1 (2026-09-13)
 
 ### Added
 
@@ -42,19 +60,9 @@
   - **Ruff** (`0.16.7`): line length 120, `py312` target, lint ruleset (E, W, F, I, UP, B, RUF) and formatted output style.
   - **MyPy** (`2.3.1`): strict mode against `app`, `ui`, `tests` with pydantic plugin.
   - **Pytest** (`9.1.1`): `tests/` test discovery with `-ra -q` defaults.
-## v0.1.4
+
+## v0.1.0 (2026-09-13)
 
 ### Added
 
-- **Alembic migration framework:** initialized `alembic/` directory with version control for database schema migrations
-- **Ingestion pipeline:** empty pipeline orchestrator added to `app/ingestion/pipeline.py` with 0 stages for future extension
-- **Pipeline run tracking:** `PipelineRun` domain entity and `pipeline_runs` database table for tracking ingestion execution metrics, FinOps token accounting, and execution audit trails
-- **FastAPI REST API:** `app/api/main.py` initialization with lifespan management, CORS middleware
-- **Health endpoints:** `GET /api/v1/health/health`, `/live`, `/ready` for liveness/readiness probes
-- **Ingestion API endpoints:** `POST /api/v1/ingestion/run` to trigger pipeline runs, `GET /api/v1/ingestion/runs` for history, `GET /api/v1/ingestion/runs/{run_id}` for run details
-- **Streamlit Dashboard:** `ui/app.py` entry point with navigation sidebar, `ui/pages/ingestion.py` dashboard with pipeline trigger button, current run monitoring, and last 5 runs history
-
-## v0.1.3-dev (Unreleased)
-
-### Added
-- **Infrastructure:** Docker Compose with PostgreSQL (pgvector), MinIO object storage, OpenTelemetry collector, Jaeger tracing, and Prometheus metrics.
+- **Environment setup:** Initial project structure and development environment configuration.
