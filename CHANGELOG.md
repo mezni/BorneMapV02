@@ -42,3 +42,7 @@
   - **Ruff** (`0.16.7`): line length 120, `py312` target, lint ruleset (E, W, F, I, UP, B, RUF) and formatted output style.
   - **MyPy** (`2.3.1`): strict mode against `app`, `ui`, `tests` with pydantic plugin.
   - **Pytest** (`9.1.1`): `tests/` test discovery with `-ra -q` defaults.
+## v0.1.3-dev (Unreleased)
+
+### Added
+- **Infrastructure:** Docker Compose with PostgreSQL (pgvector), MinIO object storage, OpenTelemetry collector, Jaeger tracing, and Prometheus metrics.
