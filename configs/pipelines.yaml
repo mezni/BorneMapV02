@@ -11,7 +11,10 @@ ingestion:
     - csv
     - txt
   storage_driver: local
-  batch_size: 10
+
+my_new_pipeline:
+  stages: []
+
 
 chunking:
   strategy: parent_child   # recursive | semantic | parent_child
