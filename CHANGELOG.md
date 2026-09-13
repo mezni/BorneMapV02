@@ -52,6 +52,7 @@
 - **FastAPI REST API:** `app/api/main.py` initialization with lifespan management, CORS middleware
 - **Health endpoints:** `GET /api/v1/health/health`, `/live`, `/ready` for liveness/readiness probes
 - **Ingestion API endpoints:** `POST /api/v1/ingestion/run` to trigger pipeline runs, `GET /api/v1/ingestion/runs` for history, `GET /api/v1/ingestion/runs/{run_id}` for run details
+- **Streamlit Dashboard:** `ui/app.py` entry point with navigation sidebar, `ui/pages/ingestion.py` dashboard with pipeline trigger button, current run monitoring, and last 5 runs history
 
 ## v0.1.3-dev (Unreleased)
 
