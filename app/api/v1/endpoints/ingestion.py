@@ -49,6 +49,7 @@ async def run_ingestion_pipeline(
     """Trigger an ingestion pipeline run."""
     pipeline_run = PipelineRun(trigger_type=payload.trigger_type.upper())
     repo.add(pipeline_run)
+    repo.session.flush()  # Persist to DB so background task can read it
     
     def run_pipeline():
         from app.db.session import SessionLocal
