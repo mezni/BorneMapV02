@@ -1,6 +1,6 @@
 """Core domain entity for Document."""
 
-from dataclasses import dataclass, field
+from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 from enum import Enum
@@ -23,19 +23,20 @@ class DocumentVersionStatus(str, Enum):
     SUPERSEDED = "superseded"
 
 
-@dataclass
-class DocumentVersion:
+class DocumentVersion(BaseModel):
     """Represents a version of a document."""
     
-    id: UUID = field(default_factory=uuid4)
-    document_id: UUID = field(default_factory=uuid4)
+    model_config = ConfigDict(extra="forbid")
+    
+    id: UUID = Field(default_factory=uuid4)
+    document_id: UUID = Field(default_factory=uuid4)
     version_number: int = 1
     source_metadata: Optional[SourceMetadata] = None
     content_hash: str = ""
     status: DocumentVersionStatus = DocumentVersionStatus.ACTIVE
     chunk_count: int = 0
     total_tokens: int = 0
-    created_at: datetime = field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
     processed_at: Optional[datetime] = None
     error_message: Optional[str] = None
     
@@ -55,19 +56,20 @@ class DocumentVersion:
         }
 
 
-@dataclass
-class Document:
+class Document(BaseModel):
     """Core domain entity representing a document to be indexed."""
     
-    id: UUID = field(default_factory=uuid4)
+    model_config = ConfigDict(extra="forbid")
+    
+    id: UUID = Field(default_factory=uuid4)
     title: str = ""
     source_metadata: Optional[SourceMetadata] = None
-    versions: List[DocumentVersion] = field(default_factory=list)
+    versions: List[DocumentVersion] = Field(default_factory=list)
     status: DocumentStatus = DocumentStatus.PENDING
     current_version: Optional[DocumentVersion] = None
-    created_at: datetime = field(default_factory=datetime.utcnow)
-    updated_at: datetime = field(default_factory=datetime.utcnow)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    metadata: Dict[str, Any] = Field(default_factory=dict)
     
     def add_version(self, version: DocumentVersion) -> None:
         """Add a new version, marking previous as superseded."""

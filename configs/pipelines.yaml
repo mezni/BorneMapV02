@@ -11,7 +11,17 @@ ingestion:
     - csv
     - txt
   storage_driver: local
-
+  batch_size: 10
+  connectors:
+    filesystem:
+      enabled: true
+      root_path: "./data/documents"
+      recursive: true
+      follow_symlinks: false
+      exclude_patterns:
+        - "**/.*"
+        - "**/__pycache__/**"
+        - "**/*.tmp"
 
 chunking:
   strategy: parent_child   # recursive | semantic | parent_child

@@ -192,6 +192,16 @@ class PromptsConfig(BaseModel):
 # ---------------------------------------------------------------------------
 
 
+class FilesystemConnectorConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool = True
+    root_path: str = "./data/documents"
+    recursive: bool = True
+    follow_symlinks: bool = False
+    exclude_patterns: list[str] = Field(default_factory=list)
+
+
 class IngestionConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -199,6 +209,7 @@ class IngestionConfig(BaseModel):
     allowed_extensions: list[str] = Field(default_factory=list)
     storage_driver: str = "local"
     batch_size: int = Field(default=10, gt=0)
+    connectors: dict[str, Any] = Field(default_factory=dict)
 
 
 class RecursiveChunking(BaseModel):

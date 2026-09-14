@@ -1,6 +1,6 @@
 """Source metadata for document ingestion tracking."""
 
-from dataclasses import dataclass, field
+from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
 from typing import Optional, Dict, Any
 from enum import Enum
@@ -14,11 +14,12 @@ class SourceType(str, Enum):
     WEBHOOK = "webhook"
 
 
-@dataclass
-class SourceMetadata:
+class SourceMetadata(BaseModel):
     """Metadata about the source of a document."""
     
-    id: UUID = field(default_factory=uuid4)
+    model_config = ConfigDict(extra="forbid")
+    
+    id: UUID = Field(default_factory=uuid4)
     source_type: SourceType = SourceType.FILESYSTEM
     source_path: str = ""
     file_name: str = ""
@@ -27,8 +28,8 @@ class SourceMetadata:
     mime_type: Optional[str] = None
     checksum_sha256: Optional[str] = None
     last_modified: Optional[datetime] = None
-    created_at: datetime = field(default_factory=datetime.utcnow)
-    additional_metadata: Dict[str, Any] = field(default_factory=dict)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    additional_metadata: Dict[str, Any] = Field(default_factory=dict)
     
     def to_dict(self) -> Dict[str, Any]:
         return {

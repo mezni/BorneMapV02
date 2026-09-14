@@ -33,6 +33,8 @@
 - **Filesystem connector:** `app/ingestion/connectors/filesystem.py` - scans directories recursively for files to index with SHA256 checksums, MIME type detection, configurable extensions/filters
 - **Source metadata:** `app/domain/metadata/source.py` - `SourceMetadata` entity with source type, path, checksum, file info, timestamps
 - **Document entity:** `app/domain/models/document.py` - `Document` core entity with versioning (single-active-version), status tracking, and `DocumentVersion` for immutable lineage
+- **Document persistence:** SQLAlchemy ORM models (`app/db/models/documents.py`), repositories (`app/db/repositories/document_repository.py`), and interfaces (`app/domain/interfaces/document_repository.py`) for saving documents to PostgreSQL
+- **Pipeline config:** Added filesystem connector config to `configs/pipelines.yaml` with root_path, recursive scan, and exclusion patterns
 
 ## v0.1.2 (2026-09-13)
 
