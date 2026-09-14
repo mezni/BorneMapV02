@@ -1,11 +1,12 @@
-"""Search engines: pgvector dense similarity and PostgreSQL full-text search."""
+"""Search engines: pgvector dense similarity, full-text, and hybrid RRF retrieval."""
 
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Any, Iterator
+from typing import Any
 from uuid import UUID
 
 from sqlalchemy.orm import Session
@@ -57,11 +58,15 @@ class BaseRetriever(ABC):
 
 
 from app.retrieval.retrievers.dense import DenseRetriever  # noqa: E402
+from app.retrieval.retrievers.hybrid import HybridRetriever  # noqa: E402
+from app.retrieval.retrievers.rrf import reciprocal_rank_fusion  # noqa: E402
 from app.retrieval.retrievers.sparse import SparseRetriever  # noqa: E402
 
 __all__ = [
     "BaseRetriever",
     "DenseRetriever",
+    "HybridRetriever",
     "RetrievedChunk",
     "SparseRetriever",
+    "reciprocal_rank_fusion",
 ]

@@ -37,6 +37,9 @@ packages = ["app"]
 testpaths = ["tests"]
 addopts = "-ra -q"
 python_files = ["test_*.py", "*_test.py"]
+markers = [
+    "integration: requires a running PostgreSQL with the pgvector extension",
+]
 
 [tool.ruff]
 line-length = 120

@@ -149,7 +149,9 @@ aether-rag/
 │   │   ├── pipeline.py                # Retrieval Orchestrator (OTel Traced)
 │   │   ├── retrievers/                # Search Engines
 │   │   │   ├── dense.py               # pgvector similarity search
-│   │   │   └── sparse.py              # PostgreSQL full-text search (tsvector/tsquery)
+│   │   │   ├── sparse.py              # PostgreSQL full-text search (tsvector/tsquery)
+│   │   │   ├── hybrid.py              # Unified dense + sparse execution engine
+│   │   │   └── rrf.py                 # Reciprocal Rank Fusion calculation
 │   │   │
 │   │
 │   └── evaluation/                    # Quality Benchmarking Pipeline

@@ -7,10 +7,10 @@ unleashing PostgreSQL's built-in keyword search without an external index.
 
 from __future__ import annotations
 
-from typing import Any, Mapping
 from uuid import UUID
 
 from sqlalchemy import text
+from sqlalchemy.engine import RowMapping
 from sqlalchemy.orm import Session
 
 from app.core.config import SparseRetrievalConfig
@@ -63,7 +63,7 @@ class SparseRetriever(BaseRetriever):
             )
         return [self._to_retrieved_chunk(row) for row in rows]
 
-    def _to_retrieved_chunk(self, row: Mapping[str, Any]) -> RetrievedChunk:
+    def _to_retrieved_chunk(self, row: RowMapping) -> RetrievedChunk:
         return RetrievedChunk(
             chunk_id=UUID(str(row["id"])),
             document_id=UUID(str(row["document_id"])),

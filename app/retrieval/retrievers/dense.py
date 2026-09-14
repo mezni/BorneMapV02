@@ -9,10 +9,10 @@ breadth is tuned per query with ``SET LOCAL hnsw.ef_search``.
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
-from typing import Any, Mapping
 from uuid import UUID
 
 from sqlalchemy import text
+from sqlalchemy.engine import RowMapping
 from sqlalchemy.orm import Session
 
 from app.core.config import DenseRetrievalConfig
@@ -69,7 +69,7 @@ class DenseRetriever(BaseRetriever):
         """Render a float sequence as a pgvector literal (``[0.1,0.2,...]``)."""
         return "[" + ",".join(str(float(value)) for value in vector) + "]"
 
-    def _to_retrieved_chunk(self, row: Mapping[str, Any]) -> RetrievedChunk:
+    def _to_retrieved_chunk(self, row: RowMapping) -> RetrievedChunk:
         return RetrievedChunk(
             chunk_id=UUID(str(row["id"])),
             document_id=UUID(str(row["document_id"])),

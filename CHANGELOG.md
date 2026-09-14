@@ -8,7 +8,7 @@
 
 | Version | Feature Domain | Key Objective | Status |
 | ------- | -------------- | ------------- | ------ |
-| v0.1.12 | Retrieval      | Dense & sparse search: pgvector similarity + full-text tsvector retrievers | In Progress |
+| v0.1.12 | Retrieval      | Dense & sparse search: pgvector similarity + full-text tsvector retrievers | Done |
 | v0.1.11 | Retrieval      | Hybrid retrieval & answer generation pipeline | In Progress |
 | v0.1.10 | Code Rewrite   | LiteLLM embedding generator & token metering rewrite | Done |
 | v0.1.9  | Ingestion Tests | Unit test suites for parsers, chunking, lifecycle, embeddings | Done |
@@ -28,6 +28,8 @@
 
 - **Dense & sparse search engines:** `app/retrieval/retrievers/` - `DenseRetriever` (pgvector cosine similarity over `chunks.embedding` via the HNSW index, per-query `SET LOCAL hnsw.ef_search`, injected query embedder so the retriever stays provider-agnostic) and `SparseRetriever` (PostgreSQL full-text search over the generated `search_vector` tsvector column using `websearch_to_tsquery` + `ts_rank` with a GIN index). Shared `RetrievedChunk` result model and `BaseRetriever` contract with caller-transaction reuse
 - **pgvector + full-text schema:** alembic migration `8b354ae423ca` - `CREATE EXTENSION vector`, `chunks.embedding` migrated JSONB → `vector(1536)` (dimension-mismatched legacy vectors nulled) with an HNSW index (cosine, `m=16`, `ef_construction=64`), plus a generated stored `search_vector tsvector` column and GIN index; docker-compose Postgres switched to `pgvector/pgvector:pg15`; `pgvector` python dependency added
+- **Hybrid engine + RRF fusion:** `app/retrieval/retrievers/hybrid.py` and `rrf.py` - `HybridRetriever` orchestrating dense + sparse in parallel at `candidate_k` and fusing results with weighted reciprocal rank fusion (`reciprocal_rank_fusion`, `k=60`), deduplicated by chunk id and re-scored
+- **Test coverage:** unit tests for RRF, dense, sparse, and hybrid retrievers plus DB-gated integration tests against PostgreSQL (`tests/unit/test_retrieval_retrievers.py`, `tests/integration/test_retrievers.py`)
 
 ## v0.1.11 (2026-09-13)
 

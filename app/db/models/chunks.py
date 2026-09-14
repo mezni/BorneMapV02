@@ -3,7 +3,8 @@
 import uuid
 
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import Column, DateTime, Enum as SQLEnum, ForeignKey, Integer, Text
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, Text
+from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -11,7 +12,6 @@ from sqlalchemy.sql import func
 from app.core.config import load_runtime_config
 from app.db.session import Base
 from app.domain.models.chunk import ChunkType
-
 
 _VECTOR_DIMS = load_runtime_config().database.vector_index.dims
 
@@ -42,5 +42,8 @@ class ChunkORM(Base):
     document = relationship("DocumentORM")
     document_version = relationship("DocumentVersionORM")
 
-    def __repr__(self):
-        return f"<ChunkORM(id={self.id}, document_id={self.document_id}, chunk_index={self.chunk_index}, type='{self.chunk_type}')>"
+    def __repr__(self) -> str:
+        return (
+            f"<ChunkORM(id={self.id}, document_id={self.document_id}, "
+            f"chunk_index={self.chunk_index}, type='{self.chunk_type}')>"
+        )
