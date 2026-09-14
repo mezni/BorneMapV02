@@ -49,7 +49,7 @@ async def run_ingestion_pipeline(
     """Trigger an ingestion pipeline run."""
     pipeline_run = PipelineRun(trigger_type=payload.trigger_type.upper())
     repo.add(pipeline_run)
-    repo.session.flush()  # Persist to DB so background task can read it
+    repo.session.commit()  # Persist to DB so background task can read it
     
     def run_pipeline():
         from app.db.session import SessionLocal
@@ -62,6 +62,17 @@ async def run_ingestion_pipeline(
                 result = pipeline.run(run)
                 run.complete()
                 repo_local.update(run)
+                db.commit()
+        except Exception as e:
+            try:
+                repo_local = SQLAlchemyPipelineRunRepository(db)
+                run = repo_local.get(pipeline_run.id)
+                if run:
+                    run.fail(str(e))
+                    repo_local.update(run)
+                db.commit()
+            except Exception:
+                db.rollback()
         finally:
             db.close()
     

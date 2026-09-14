@@ -18,6 +18,7 @@ class PipelineRun:
 
     def __init__(
         self,
+        id: Optional[UUID] = None,
         trigger_type: str = "MANUAL",
         status: RunStatus = RunStatus.PENDING,
         documents_discovered: int = 0,
@@ -32,7 +33,7 @@ class PipelineRun:
         error_message: Optional[str] = None,
         metadata: Dict[str, Any] = None,
     ):
-        self.id = uuid4()
+        self.id = id or uuid4()
         self.trigger_type = trigger_type
         self.status = status
         self.documents_discovered = documents_discovered
