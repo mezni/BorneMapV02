@@ -42,7 +42,7 @@ class TestParsedDocument:
 
     def test_extra_fields_rejected(self) -> None:
         with pytest.raises(ValidationError):
-            ParsedDocument(text="x", surprise=True)
+            ParsedDocument.model_validate({"text": "x", "surprise": True})
 
     def test_title_optional(self) -> None:
         assert ParsedDocument(text="x").title is None
@@ -74,7 +74,7 @@ class TestPlainTextParser:
             PlainTextParser().parse(path)
 
     def test_missing_file_raises_parse_error(self, tmp_path: Path) -> None:
-        with pytest.raises(ParseError, match="Cannot read|cannot read|decode"):
+        with pytest.raises(ParseError, match=r"Cannot read|cannot read|decode"):
             PlainTextParser().parse(tmp_path / "nope.txt")
 
 
@@ -171,7 +171,7 @@ class TestOptionalParsers:
         from app.ingestion.parsers import DOCXParser
 
         path = _write(tmp_path, "doc.docx", "PK\x03\x04fake")
-        with pytest.raises(ParseError, match="python-docx|docx"):
+        with pytest.raises(ParseError, match=r"python-docx|docx"):
             DOCXParser().parse(path)
 
 
