@@ -107,7 +107,8 @@ aether-rag/
 │   │   ├── v1/
 │   │   │   ├── endpoints/
 │   │   │   │   ├── health.py          # Liveness & Readiness endpoints
-│   │   │   │   └── ingestion.py       # Trigger document ingestion jobs
+│   │   │   │   ├── ingestion.py       # Trigger document ingestion jobs
+│   │   │   │   └── search.py          # Hybrid retrieval & chat endpoints
 │   │   │   ├── dependencies.py        # DB sessions, Auth, OTel context injection
 │   │   │   └── router.py              # API Router aggregation
 │   │   └── main.py                    # FastAPI application factory & OTel middleware
