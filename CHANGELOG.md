@@ -2,17 +2,46 @@
 
 ## Project: Aether Wireless RAG Platform
 
-**Current Version:** v0.1.4
+**Current Version:** v0.1.8
 
 ## Roadmap Overview
 
 | Version | Feature Domain | Key Objective | Status |
 | ------- | -------------- | ------------- | ------ |
+| v0.1.8  | Ingestion Tests | Unit test suites for parsers, chunking, lifecycle, embeddings | In Progress |
+| v0.1.7  | Embeddings     | LiteLLM embedding generator with token metering | In Progress |
+| v0.1.6  | Chunking       | Recursive, Semantic, Token, Parent-Child splitters | Done |
+| v0.1.5  | Parsers        | Document layout parsers (PDF, DOCX, HTML, CSV) | Done |
 | v0.1.4  | API & Dashboard | FastAPI REST API, Health endpoints, Ingestion API, Streamlit Dashboard | Done |
 | v0.1.3  | Pipeline & DB   | Alembic migrations, PipelineRun entity, pipeline_runs table, Ingestion orchestrator | Done |
 | v0.1.2  | Config System   | Repository architecture, externalized YAML configs, Pydantic validation engine | Done |
 | v0.1.1  | Foundation      | Project scaffold, uv environment, Docker, PostgreSQL/pgvector, configs/ YAML system | Done |
 | v0.1.0  | Foundation      | Environment setup, project scaffold, tooling (Ruff, MyPy, Pytest) | Done |
+
+## v0.1.8 (2026-09-13)
+
+### Added
+
+- **Ingestion pipeline tests:** unit test suites for the ingestion modules - `tests/unit/test_lifecycle.py` (version manager & SHA-256 conflict resolution, 16 tests), `tests/unit/test_parsers.py` (parser registry, PlainText/HTML/CSV parsing, PDF/DOCX install hints, 22 tests), and `tests/unit/test_chunking.py` (helpers, Recursive/Token/Semantic/ParentChild chunkers, factory routing, 26 tests). Full suite passes with ruff and mypy clean
+
+## v0.1.7 (2026-09-13)
+
+### Added
+
+- **Embedding generation:** `app/ingestion/embeddings/` - LiteLLM embedding generator with token metering. `BaseEmbeddingGenerator` contract driven by `EmbeddingConfig` (provider, model, dimensions, batch size) with empty-text guards and per-batch dimension validation. `TokenMeter` tracks input tokens per batch, batch count, and estimated USD cost from `pricing.embedding_usd_per_1m_tokens`. `LiteLLMEmbeddingGenerator` resolved via opt-in `litellm` import with request timeout, exponential-backoff retries, and provider usage token accounting; `get_embedding_generator()` factory
+
+## v0.1.6 (2026-09-13)
+
+### Added
+
+- **Chunking splitters:** `app/ingestion/chunking/` - dependency-free splitters producing `Chunk` entities from raw text: `RecursiveChunker` (paragraph→sentence→word cascade), `TokenChunker` (estimated-token budget with overlap), `SemanticChunker` (embedding-similarity boundaries with injectable `Embedder`, sentence packing fallback), and `ParentChildChunker` (PARENT/CHILD hierarchy linked via `parent_chunk_id` using char offsets). `get_chunker()` factory resolves the active strategy from `configs/pipelines.yaml`
+- **Pipeline config:** Added `token` chunking strategy + `TokenChunking` config model (`chunk_size`, `chunk_overlap`)
+
+## v0.1.5 (2026-09-13)
+
+### Added
+
+- **Document parsers:** `app/ingestion/parsers/` - dependency-free `BaseParser` framework with an extension registry: `PlainTextParser` (`.txt`/`.md`/`.markdown`), `HTMLParser` (stdlib `html.parser`; extracts title + headings, drops script/style, readable layout), `CSVParser` (`.csv`/`.tsv` with auto delimiter, UTF-8 BOM handling), `PDFParser` and `DOCXParser` (optional `pypdf`/`python-docx` imports that raise a clear install-hint `ParseError` when missing). `get_parser()` factory with unknown-extension fallback to UTF-8 text; outputs `ParsedDocument` with token/char counts and metadata
 
 ## v0.1.4 (2026-09-13)
 
@@ -42,10 +71,8 @@
 - **Document persistence:** SQLAlchemy ORM models (`app/db/models/documents.py`), repositories (`app/db/repositories/document_repository.py`), and interfaces (`app/domain/interfaces/document_repository.py`) for saving documents to PostgreSQL
 - **Chunk entity:** `app/domain/models/chunk.py` - `Chunk` core entity with `ChunkType` (parent/child for the parent-child chunking strategy), parent-chunk linkage, content, token/char counts, embedding payload, and metadata
 - **Chunk persistence:** `chunks` database table with FK cascade to documents/document_versions, indexed by document and version; `SQLAlchemyChunkRepository` (`app/db/repositories/chunk_repository.py`) and `AbstractChunkRepository` interface (`app/domain/interfaces/chunk_repository.py`) with bulk insert, list-by-document/version, count, and delete operations
-- **Chunking splitters:** `app/ingestion/chunking/` - four dependency-free splitters producing `Chunk` entities from raw text: `RecursiveChunker` (paragraph→sentence→word cascade), `TokenChunker` (estimated-token budget with overlap), `SemanticChunker` (embedding-similarity boundaries with injectable `Embedder`, sentence packing fallback), and `ParentChildChunker` (PARENT/CHILD hierarchy linked via `parent_chunk_id` using char offsets). `get_chunker()` factory resolves the active strategy from `configs/pipelines.yaml`
-- **Document parsers:** `app/ingestion/parsers/` - dependency-free `BaseParser` framework with an extension registry: `PlainTextParser` (`.txt`/`.md`/`.markdown`), `HTMLParser` (stdlib `html.parser`; extracts title + headings, drops script/style, readable layout), `CSVParser` (`.csv`/`.tsv` with auto delimiter, UTF-8 BOM handling), `PDFParser` and `DOCXParser` (optional `pypdf`/`python-docx` imports that raise a clear install-hint `ParseError` when missing). `get_parser()` factory with unknown-extension fallback to UTF-8 text; outputs `ParsedDocument` with token/char counts and metadata
 - **Document lifecycle:** `app/ingestion/lifecycle/` - version manager & SHA-256 conflict resolver. `SHA256ConflictResolver` decides `SKIP` (same content as previously indexed, enforced by a unique `documents.checksum_sha256` constraint), `UPDATE` (same path, changed content), `NEW` (no prior record), or `CONFLICT` (ambiguity; configurable content deduplication). `DefaultVersionManager` orchestrates first-time indexing, version bumping with old-version SUPERSEDED, source-metadata refresh, `previous_content_hash` audit trail, and optional old-version ARCHIVED pruning; repository-agnostic via injected path/checksum lookup callables. `ConflictError` aborts before any side effects
-- **Pipeline config:** Added filesystem connector config to `configs/pipelines.yaml` with root_path, recursive scan, and exclusion patterns; added `token` chunking strategy + `TokenChunking` config model (`chunk_size`, `chunk_overlap`)
+- **Pipeline config:** Added filesystem connector config to `configs/pipelines.yaml` with root_path, recursive scan, and exclusion patterns
 
 ## v0.1.2 (2026-09-13)
 
