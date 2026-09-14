@@ -23,6 +23,11 @@
 - **Ingestion API endpoints:** `POST /api/v1/ingestion/run` to trigger pipeline runs, `GET /api/v1/ingestion/runs` for history, `GET /api/v1/ingestion/runs/{run_id}` for run details
 - **Streamlit Dashboard:** `ui/app.py` entry point with navigation sidebar, `ui/pages/ingestion.py` dashboard with pipeline trigger button, current run monitoring, and last 5 runs history
 
+### Fixed
+
+- **Pipeline run persistence:** `POST /api/v1/ingestion/run` now `commit()`s the new run (previously only `flush()`ed, so the row was rolled back on session close and `pipeline_runs` stayed empty). Background task also commits completed/failed status updates and marks runs `FAILED` on exception
+- **PipelineRun id hydration:** `PipelineRun.__init__` now accepts an `id` argument (defaulting to a new UUID), fixing a `TypeError` in `SQLAlchemyPipelineRunRepository.get()`/`list()` when reconstructing domain models from the ORM
+
 ## v0.1.3 (2026-09-13)
 
 ### Added
