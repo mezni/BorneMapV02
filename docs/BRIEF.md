@@ -146,7 +146,11 @@ aether-rag/
 │   │   └── embeddings/                # LiteLLM Embedding Generator
 │   │
 │   ├── retrieval/                     # Hybrid Retrieval & Answer Generation Core
-│   │   ├── pipeline.py                # Retrieval Orchestrator
+│   │   ├── pipeline.py                # Retrieval Orchestrator (OTel Traced)
+│   │   ├── retrievers/                # Search Engines
+│   │   │   ├── dense.py               # pgvector similarity search
+│   │   │   └── sparse.py              # PostgreSQL full-text search (tsvector/tsquery)
+│   │   │
 │   │
 │   └── evaluation/                    # Quality Benchmarking Pipeline
 │       ├── pipeline.py                # Evaluation Orchestrator

@@ -1,12 +1,19 @@
 """SQLAlchemy ORM model for Chunk."""
 
-from sqlalchemy import Column, String, Integer, DateTime, Text, ForeignKey, Enum as SQLEnum
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+import uuid
+
+from pgvector.sqlalchemy import Vector
+from sqlalchemy import Column, DateTime, Enum as SQLEnum, ForeignKey, Integer, Text
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+
+from app.core.config import load_runtime_config
 from app.db.session import Base
 from app.domain.models.chunk import ChunkType
-import uuid
+
+
+_VECTOR_DIMS = load_runtime_config().database.vector_index.dims
 
 
 class ChunkORM(Base):
@@ -23,7 +30,7 @@ class ChunkORM(Base):
     content = Column(Text, nullable=False)
     token_count = Column(Integer, nullable=False, default=0)
     char_count = Column(Integer, nullable=False, default=0)
-    embedding = Column(JSONB, nullable=True)
+    embedding = Column(Vector(_VECTOR_DIMS), nullable=True)
 
     # Additional metadata
     metadata_ = Column("metadata", JSONB, nullable=False, default={})
