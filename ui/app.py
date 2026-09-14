@@ -12,12 +12,15 @@ st.sidebar.markdown("---")
 
 page = st.sidebar.radio(
     "Navigation",
-    ["📊 Ingestion Dashboard", "📄 Documents", "💬 Chat", "📈 FinOps", "⚙️ Settings"],
+    ["📊 Ingestion Dashboard", "🔍 Search", "📄 Documents", "💬 Chat", "📈 FinOps", "⚙️ Settings"],
 )
 
 if page == "📊 Ingestion Dashboard":
     from ui.pages.ingestion import render_ingestion_dashboard
     render_ingestion_dashboard()
+elif page == "🔍 Search":
+    from ui.pages.search import render_search_page
+    render_search_page()
 elif page == "📄 Documents":
     st.title("📄 Documents")
     st.info("Documents management coming soon...")
