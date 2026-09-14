@@ -40,7 +40,10 @@
 - **Source metadata:** `app/domain/metadata/source.py` - `SourceMetadata` entity with source type, path, checksum, file info, timestamps
 - **Document entity:** `app/domain/models/document.py` - `Document` core entity with versioning (single-active-version), status tracking, and `DocumentVersion` for immutable lineage
 - **Document persistence:** SQLAlchemy ORM models (`app/db/models/documents.py`), repositories (`app/db/repositories/document_repository.py`), and interfaces (`app/domain/interfaces/document_repository.py`) for saving documents to PostgreSQL
-- **Pipeline config:** Added filesystem connector config to `configs/pipelines.yaml` with root_path, recursive scan, and exclusion patterns
+- **Chunk entity:** `app/domain/models/chunk.py` - `Chunk` core entity with `ChunkType` (parent/child for the parent-child chunking strategy), parent-chunk linkage, content, token/char counts, embedding payload, and metadata
+- **Chunk persistence:** `chunks` database table with FK cascade to documents/document_versions, indexed by document and version; `SQLAlchemyChunkRepository` (`app/db/repositories/chunk_repository.py`) and `AbstractChunkRepository` interface (`app/domain/interfaces/chunk_repository.py`) with bulk insert, list-by-document/version, count, and delete operations
+- **Chunking splitters:** `app/ingestion/chunking/` - four dependency-free splitters producing `Chunk` entities from raw text: `RecursiveChunker` (paragraph→sentence→word cascade), `TokenChunker` (estimated-token budget with overlap), `SemanticChunker` (embedding-similarity boundaries with injectable `Embedder`, sentence packing fallback), and `ParentChildChunker` (PARENT/CHILD hierarchy linked via `parent_chunk_id` using char offsets). `get_chunker()` factory resolves the active strategy from `configs/pipelines.yaml`
+- **Pipeline config:** Added filesystem connector config to `configs/pipelines.yaml` with root_path, recursive scan, and exclusion patterns; added `token` chunking strategy + `TokenChunking` config model (`chunk_size`, `chunk_overlap`)
 
 ## v0.1.2 (2026-09-13)
 

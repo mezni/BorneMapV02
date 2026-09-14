@@ -25,6 +25,7 @@ if db_url:
 from app.db.session import Base
 from app.db.models import pipeline_runs  # noqa
 from app.db.models import documents  # noqa
+from app.db.models import chunks  # noqa
 
 target_metadata = Base.metadata
 

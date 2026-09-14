@@ -24,7 +24,7 @@ ingestion:
         - "**/*.tmp"
 
 chunking:
-  strategy: parent_child   # recursive | semantic | parent_child
+  strategy: parent_child   # recursive | semantic | token | parent_child
   recursive:
     chunk_size: 512
     chunk_overlap: 64
@@ -34,6 +34,9 @@ chunking:
     child_chunk_overlap: 64
   semantic:
     similarity_threshold: 0.35
+  token:
+    chunk_size: 512
+    chunk_overlap: 64
 
 retrieval:
   dense:

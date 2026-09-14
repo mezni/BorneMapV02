@@ -233,13 +233,21 @@ class SemanticChunking(BaseModel):
     similarity_threshold: float = Field(default=0.35, gt=0.0, lt=1.0)
 
 
+class TokenChunking(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    chunk_size: int = Field(default=512, gt=0)
+    chunk_overlap: int = Field(default=64, ge=0)
+
+
 class ChunkingConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    strategy: Literal["recursive", "semantic", "parent_child"] = "parent_child"
+    strategy: Literal["recursive", "semantic", "token", "parent_child"] = "parent_child"
     recursive: RecursiveChunking = RecursiveChunking()
     parent_child: ParentChildChunking = ParentChildChunking()
     semantic: SemanticChunking = SemanticChunking()
+    token: TokenChunking = TokenChunking()
 
 
 class DenseRetrievalConfig(BaseModel):
