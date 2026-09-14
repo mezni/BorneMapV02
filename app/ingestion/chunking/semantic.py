@@ -60,7 +60,7 @@ class SemanticChunker(BaseChunker):
             current: list[str] = [sentences[0]]
             for i in range(1, len(sentences)):
                 sim = _cosine_similarity(embeds[i - 1], embeds[i])
-                if sim < self.threshold or sum(len(s) for s in current) + len(sentences[i]) > self._budget_chars:
+                if sim < self.threshold or sum(len(s) + 1 for s in current) + len(sentences[i]) > self._budget_chars:
                     groups.append(current)
                     current = [sentences[i]]
                 else:
@@ -71,12 +71,12 @@ class SemanticChunker(BaseChunker):
             current = []
             current_len = 0
             for sent in sentences:
-                if current and current_len + len(sent) > self._budget_chars:
+                if current and current_len + len(sent) + 1 > self._budget_chars:
                     groups.append(current)
                     current = []
                     current_len = 0
                 current.append(sent)
-                current_len += len(sent)
+                current_len += len(sent) + 1
             if current:
                 groups.append(current)
 

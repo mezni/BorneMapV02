@@ -11,6 +11,7 @@ from app.ingestion.parsers.base import BaseParser, ParsedDocument, ParseError
 _SKIP_TAGS = {"script", "style", "noscript", "template"}
 _HEADING_TAGS = {"h1", "h2", "h3", "h4", "h5", "h6"}
 _BLOCK_TAGS = _HEADING_TAGS | {"p", "li", "div", "section", "article", "blockquote", "pre", "tr", "br"}
+_NO_LEADING_SPACE = {".", ",", ";", ":", "!", "?", ")", "]", "}"}
 
 
 class _HTMLTextExtractor(StdlibHTMLParser):
@@ -66,7 +67,8 @@ class _HTMLTextExtractor(StdlibHTMLParser):
         if self._in_heading:
             self.headings.append(stripped)
         if self.buffer and not self.buffer.endswith(("\n", " ")):
-            self.buffer += " "
+            if stripped[:1] not in _NO_LEADING_SPACE:
+                self.buffer += " "
         self.buffer += stripped
 
 
