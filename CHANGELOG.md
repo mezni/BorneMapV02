@@ -2,12 +2,13 @@
 
 ## Project: Aether Wireless RAG Platform
 
-**Current Version:** v0.1.12
+**Current Version:** v0.1.13
 
 ## Roadmap Overview
 
 | Version | Feature Domain | Key Objective | Status |
 | ------- | -------------- | ------------- | ------ |
+| v0.1.13 | Retrieval      | Implement hybrid search | In Progress |
 | v0.1.12 | Retrieval      | Dense & sparse search: pgvector similarity + full-text tsvector retrievers | Done |
 | v0.1.11 | Retrieval      | Hybrid retrieval & answer generation pipeline | In Progress |
 | v0.1.10 | Code Rewrite   | LiteLLM embedding generator & token metering rewrite | Done |
@@ -21,6 +22,12 @@
 | v0.1.2  | Config System   | Repository architecture, externalized YAML configs, Pydantic validation engine | Done |
 | v0.1.1  | Foundation      | Project scaffold, uv environment, Docker, PostgreSQL/pgvector, configs/ YAML system | Done |
 | v0.1.0  | Foundation      | Environment setup, project scaffold, tooling (Ruff, MyPy, Pytest) | Done |
+
+## v0.1.13 (2026-09-14)
+
+### Added
+
+- _In progress — implement hybrid search: unified dense + sparse execution and answer generation._
 
 ## v0.1.12 (2026-09-14)
 
