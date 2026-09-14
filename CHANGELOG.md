@@ -30,6 +30,7 @@
 - **Alembic migration framework:** initialized `alembic/` directory with version control for database schema migrations
 - **Ingestion pipeline:** empty pipeline orchestrator added to `app/ingestion/pipeline.py` with 0 stages for future extension
 - **Pipeline run tracking:** `PipelineRun` domain entity and `pipeline_runs` database table for tracking ingestion execution metrics, FinOps token accounting, and execution audit trails
+- **Document discovery:** `FilesystemConnector.scan()` walks the configured input directory (`configs/pipelines.yaml` → `connectors.filesystem.root_path`) recursively, computes SHA-256 checksums, detects MIME types, enforces extension/size/exclusion filters, and yields ready-to-persist `Document` entities
 - **Filesystem connector:** `app/ingestion/connectors/filesystem.py` - scans directories recursively for files to index with SHA256 checksums, MIME type detection, configurable extensions/filters
 - **Source metadata:** `app/domain/metadata/source.py` - `SourceMetadata` entity with source type, path, checksum, file info, timestamps
 - **Document entity:** `app/domain/models/document.py` - `Document` core entity with versioning (single-active-version), status tracking, and `DocumentVersion` for immutable lineage
