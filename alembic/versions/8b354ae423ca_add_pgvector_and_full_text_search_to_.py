@@ -30,7 +30,7 @@ def upgrade() -> None:
         USING CASE
             WHEN embedding IS NULL
               OR jsonb_typeof(embedding) <> 'array'
-              OR jsonb_array_length(embedding) = 0
+              OR jsonb_array_length(embedding) <> {VECTOR_DIMENSIONS}
             THEN NULL
             ELSE embedding::text::vector
         END

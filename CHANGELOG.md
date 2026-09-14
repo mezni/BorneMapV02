@@ -2,12 +2,13 @@
 
 ## Project: Aether Wireless RAG Platform
 
-**Current Version:** v0.1.11
+**Current Version:** v0.1.12
 
 ## Roadmap Overview
 
 | Version | Feature Domain | Key Objective | Status |
 | ------- | -------------- | ------------- | ------ |
+| v0.1.12 | Retrieval      | Dense & sparse search: pgvector similarity + full-text tsvector retrievers | In Progress |
 | v0.1.11 | Retrieval      | Hybrid retrieval & answer generation pipeline | In Progress |
 | v0.1.10 | Code Rewrite   | LiteLLM embedding generator & token metering rewrite | Done |
 | v0.1.9  | Ingestion Tests | Unit test suites for parsers, chunking, lifecycle, embeddings | Done |
@@ -20,6 +21,13 @@
 | v0.1.2  | Config System   | Repository architecture, externalized YAML configs, Pydantic validation engine | Done |
 | v0.1.1  | Foundation      | Project scaffold, uv environment, Docker, PostgreSQL/pgvector, configs/ YAML system | Done |
 | v0.1.0  | Foundation      | Environment setup, project scaffold, tooling (Ruff, MyPy, Pytest) | Done |
+
+## v0.1.12 (2026-09-14)
+
+### Added
+
+- **Dense & sparse search engines:** `app/retrieval/retrievers/` - `DenseRetriever` (pgvector cosine similarity over `chunks.embedding` via the HNSW index, per-query `SET LOCAL hnsw.ef_search`, injected query embedder so the retriever stays provider-agnostic) and `SparseRetriever` (PostgreSQL full-text search over the generated `search_vector` tsvector column using `websearch_to_tsquery` + `ts_rank` with a GIN index). Shared `RetrievedChunk` result model and `BaseRetriever` contract with caller-transaction reuse
+- **pgvector + full-text schema:** alembic migration `8b354ae423ca` - `CREATE EXTENSION vector`, `chunks.embedding` migrated JSONB → `vector(1536)` (dimension-mismatched legacy vectors nulled) with an HNSW index (cosine, `m=16`, `ef_construction=64`), plus a generated stored `search_vector tsvector` column and GIN index; docker-compose Postgres switched to `pgvector/pgvector:pg15`; `pgvector` python dependency added
 
 ## v0.1.11 (2026-09-13)
 
