@@ -2,12 +2,14 @@
 
 ## Project: Aether Wireless RAG Platform
 
-**Current Version:** v0.1.9
+**Current Version:** v0.1.11
 
 ## Roadmap Overview
 
 | Version | Feature Domain | Key Objective | Status |
 | ------- | -------------- | ------------- | ------ |
+| v0.1.11 | Retrieval      | Hybrid retrieval & answer generation pipeline | In Progress |
+| v0.1.10 | Code Rewrite   | LiteLLM embedding generator & token metering rewrite | Done |
 | v0.1.9  | Ingestion Tests | Unit test suites for parsers, chunking, lifecycle, embeddings | Done |
 | v0.1.8  | Embeddings     | LiteLLM embedding generator with token metering | Done |
 | v0.1.7  | Chunking       | Recursive, Semantic, Token, Parent-Child splitters | Done |
@@ -18,6 +20,18 @@
 | v0.1.2  | Config System   | Repository architecture, externalized YAML configs, Pydantic validation engine | Done |
 | v0.1.1  | Foundation      | Project scaffold, uv environment, Docker, PostgreSQL/pgvector, configs/ YAML system | Done |
 | v0.1.0  | Foundation      | Environment setup, project scaffold, tooling (Ruff, MyPy, Pytest) | Done |
+
+## v0.1.11 (2026-09-13)
+
+### Added
+
+- **Retrieval orchestrator:** `app/retrieval/pipeline.py` - hybrid retrieval & answer generation core. Retrieval pipeline orchestrator coordinating dense/sparse search, RRF fusion, cross-encoder re-ranking, and grounded context assembly (in progress)
+
+## v0.1.10 (2026-09-13)
+
+### Added
+
+- **Code rewrite - embedding generation:** `app/ingestion/embeddings/` - LiteLLM embedding generator with token metering, introduced as a code rewrite of the ingestion layer. `BaseEmbeddingGenerator` contract driven by `EmbeddingConfig` (provider, model, dimensions, batch size) with empty-text guards and per-batch dimension validation. `TokenMeter` tracks input tokens per batch, batch count, and estimated USD cost from `pricing.embedding_usd_per_1m_tokens`; `LiteLLMEmbeddingGenerator` resolved via opt-in `litellm` import with request timeout, exponential-backoff retries, and provider usage token accounting; `get_embedding_generator()` factory. Shipping with `tests/unit/test_embeddings.py` (token metering, batching/dimension guards, LiteLLM retries + install hint, 21 tests)
 
 ## v0.1.9 (2026-09-13)
 

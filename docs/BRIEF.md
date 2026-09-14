@@ -103,26 +103,18 @@ aether-rag/
 │   └── database.yaml                  # Vector index settings & connection parameters
 │
 ├── app/                               # Application Core Source Code
-│   ├── api/                           # Delivery Layer (FastAPI)
+│   ├── api/                           # Delivery Layer (FastAPI REST Controllers)
 │   │   ├── v1/
 │   │   │   ├── endpoints/
-│   │   │   │   ├── health.py          # Liveness & readiness probes
-│   │   │   │   ├── ingestion.py       # Document ingestion trigger routes
-│   │   │   │   ├── search.py          # Search & grounded QA endpoints
-│   │   │   │   ├── prompts.py         # Prompt management endpoints
-│   │   │   │   ├── evaluation.py      # Benchmark evaluation endpoints
-│   │   │   │   └── finops.py          # Cost & token attribution dashboards
-│   │   │   ├── dependencies.py        # Database sessions, auth, context injection
-│   │   │   └── router.py              # Unified API router aggregation
-│   │   └── main.py                    # FastAPI app initialization & OTel setup
+│   │   │   │   ├── health.py          # Liveness & Readiness endpoints
+│   │   │   │   └── ingestion.py       # Trigger document ingestion jobs
+│   │   │   ├── dependencies.py        # DB sessions, Auth, OTel context injection
+│   │   │   └── router.py              # API Router aggregation
+│   │   └── main.py                    # FastAPI application factory & OTel middleware
 │   │
 │   ├── core/                          # Cross-Cutting Infrastructure Concerns
-│   │   ├── config.py                  # Pydantic-Settings & YAML configuration parser
-│   │   ├── logging.py                 # Structured JSON logging with correlation IDs
-│   │   ├── telemetry.py               # OpenTelemetry tracer & span configurations
-│   │   ├── metrics.py                 # Prometheus custom metric definitions
-│   │   ├── security.py                # RBAC & classification governance context
-│   │   └── finops.py                  # Token accounting & USD pricing engine
+│   │   ├── config.py                  # Pydantic-Settings (ENV management)
+│   │   └── logging.py                 # Structured JSON logging with trace correlation IDs
 │   │
 │   ├── domain/                        # Pure Domain Logic (No DB/Framework dependencies)
 │   │   ├── models/                    # Core Entities (Document, Version, Chunk, Answer)
@@ -153,11 +145,8 @@ aether-rag/
 │   │   ├── chunking/                  # Recursive, Semantic, and Parent-Child splitters
 │   │   └── embeddings/                # LiteLLM Embedding Generator
 │   │
-│   ├── retrieval/                     # Hybrid Retrieval Engine
+│   ├── retrieval/                     # Hybrid Retrieval & Answer Generation Core
 │   │   ├── pipeline.py                # Retrieval Orchestrator
-│   │   ├── retrievers/                # Search Drivers (Dense, Sparse, Hybrid, RRF)
-│   │   ├── rerankers/                 # Cross-Encoder re-ranker integration
-│   │   └── context/                   # Context assembler & citation formatter
 │   │
 │   └── evaluation/                    # Quality Benchmarking Pipeline
 │       ├── pipeline.py                # Evaluation Orchestrator
