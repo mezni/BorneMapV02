@@ -152,6 +152,8 @@ aether-rag/
 │   │   │   ├── sparse.py              # PostgreSQL full-text search (tsvector/tsquery)
 │   │   │   ├── hybrid.py              # Unified dense + sparse execution engine
 │   │   │   └── rrf.py                 # Reciprocal Rank Fusion calculation
+│   │   ├── rerankers/                 # Cross-Encoder Re-Rankers
+│   │   │   └── cross_encoder.py       # Cross-Encoder re-ranker integration
 │   │   │
 │   │
 │   └── evaluation/                    # Quality Benchmarking Pipeline

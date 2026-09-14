@@ -8,7 +8,7 @@
 
 | Version | Feature Domain | Key Objective | Status |
 | ------- | -------------- | ------------- | ------ |
-| v0.1.13 | Retrieval      | Implement hybrid search | In Progress |
+| v0.1.13 | Retrieval      | Implement hybrid search | Done |
 | v0.1.12 | Retrieval      | Dense & sparse search: pgvector similarity + full-text tsvector retrievers | Done |
 | v0.1.11 | Retrieval      | Hybrid retrieval & answer generation pipeline | In Progress |
 | v0.1.10 | Code Rewrite   | LiteLLM embedding generator & token metering rewrite | Done |
@@ -27,7 +27,8 @@
 
 ### Added
 
-- _In progress — implement hybrid search: unified dense + sparse execution and answer generation._
+- **Retrieval orchestrator:** `app/retrieval/pipeline.py` - `RetrievalPipeline` coordinating dense + sparse candidate gathering (RRF fusion at `hybrid.candidate_k`) followed by optional cross-encoder re-ranking, trimming to `rerank.top_k` with the configured `rerank.score_threshold`
+- **Cross-Encoder re-ranker integration:** `app/retrieval/rerankers/cross_encoder.py` - `CrossEncoderReRanker` scoring each `(query, chunk)` pair with an injected provider-agnostic model callable (`score_pairs`), re-sorting results and applying the configured threshold; degrades to passthrough when disabled or model-less
 
 ## v0.1.12 (2026-09-14)
 
