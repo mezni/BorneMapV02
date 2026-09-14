@@ -8,8 +8,8 @@
 
 | Version | Feature Domain | Key Objective | Status |
 | ------- | -------------- | ------------- | ------ |
-| v0.1.8  | Ingestion Tests | Unit test suites for parsers, chunking, lifecycle, embeddings | In Progress |
-| v0.1.7  | Embeddings     | LiteLLM embedding generator with token metering | In Progress |
+| v0.1.8  | Ingestion Tests | Unit test suites for parsers, chunking, lifecycle, embeddings | Done |
+| v0.1.7  | Embeddings     | LiteLLM embedding generator with token metering | Done |
 | v0.1.6  | Chunking       | Recursive, Semantic, Token, Parent-Child splitters | Done |
 | v0.1.5  | Parsers        | Document layout parsers (PDF, DOCX, HTML, CSV) | Done |
 | v0.1.4  | API & Dashboard | FastAPI REST API, Health endpoints, Ingestion API, Streamlit Dashboard | Done |
@@ -22,7 +22,7 @@
 
 ### Added
 
-- **Ingestion pipeline tests:** unit test suites for the ingestion modules - `tests/unit/test_lifecycle.py` (version manager & SHA-256 conflict resolution, 16 tests), `tests/unit/test_parsers.py` (parser registry, PlainText/HTML/CSV parsing, PDF/DOCX install hints, 22 tests), and `tests/unit/test_chunking.py` (helpers, Recursive/Token/Semantic/ParentChild chunkers, factory routing, 26 tests). Full suite passes with ruff and mypy clean
+- **Ingestion pipeline tests:** unit test suites for the ingestion modules - `tests/unit/test_lifecycle.py` (version manager & SHA-256 conflict resolution, 16 tests), `tests/unit/test_parsers.py` (parser registry, PlainText/HTML/CSV parsing, PDF/DOCX install hints, 22 tests), `tests/unit/test_chunking.py` (helpers, Recursive/Token/Semantic/ParentChild chunkers, factory routing, 26 tests), and `tests/unit/test_embeddings.py` (token metering, base generator batching/dimension guards, LiteLLM retries + install hint, 21 tests). Full suite passes with ruff and mypy clean
 
 ## v0.1.7 (2026-09-13)
 
